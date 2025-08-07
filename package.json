@@ -9,7 +9,8 @@
     "web": "expo start --web",
     "build": "npx expo export:web",
     "build:web": "npx expo export:web",
-    "preview": "npx expo export:web && npx serve web-build"
+    "preview": "npx expo export:web && npx serve web-build",
+    "postinstall": "mkdir -p node_modules/react-native-web/dist/vendor/react-native/NativeEventEmitter && echo 'export default {};' > node_modules/react-native-web/dist/vendor/react-native/NativeEventEmitter/RCTDeviceEventEmitter.js"
   },
   "dependencies": {
     "@expo/metro-runtime": "5.0.4",

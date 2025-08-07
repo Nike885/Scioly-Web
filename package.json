@@ -38,8 +38,8 @@
     "expo-status-bar": "~1.11.1",
     "expo-video": "2.1.0",
     "firebase": "^11.6.1",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "react-native": "0.79.5",
     "react-native-animatable": "^1.4.0",
     "react-native-gesture-handler": "~2.24.0",
@@ -48,7 +48,8 @@
     "react-native-screens": "~4.11.1",
     "react-native-svg": "^15.11.2",
     "react-native-vector-icons": "^10.3.0",
-    "react-native-web": "^0.20.0"
+    "react-native-web": "0.19.6",
+    "expo-modules-core": "1.2.6"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0"

@@ -56,7 +56,7 @@
     "@babel/core": "^7.26.0"
   },
   "engines": {
-    "node": ">=18"
+    "node": "18.19.1"
   },
   "private": true
 }

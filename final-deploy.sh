@@ -20,8 +20,6 @@ echo "🔧 Adding environment variables to HTML..."
 cat > temp_env_script.js << 'EOF'
 // Inject environment variables for web builds
 window.__ENV__ = {
-  EXPO_PUBLIC_SUPABASE_URL: 'https://jlkaqwqccilgdtslxgtf.supabase.co',
-  EXPO_PUBLIC_SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsa2Fxd3FjY2lsZ2R0c2x4Z3RmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkyOTAzMTcsImV4cCI6MjA2NDg2NjMxN30.G6PIK57J7rXAlY0gd-2TbTiBN_k7vTBL19oOnMYrz0s'
 };
 EOF
 
@@ -30,8 +28,6 @@ sed -i '' '/<script defer="defer" src="\/static\/js\/main.*.js"><\/script>/a\
 <script>\
 // Inject environment variables for web builds\
 window.__ENV__ = {\
-  EXPO_PUBLIC_SUPABASE_URL: '\''https://jlkaqwqccilgdtslxgtf.supabase.co'\'',\
-  EXPO_PUBLIC_SUPABASE_ANON_KEY: '\''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsa2Fxd3FjY2lsZ2R0c2x4Z3RmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkyOTAzMTcsImV4cCI6MjA2NDg2NjMxN30.G6PIK57J7rXAlY0gd-2TbTiBN_k7vTBL19oOnMYrz0s'\''\
 };\
 </script>' web-build/index.html
 

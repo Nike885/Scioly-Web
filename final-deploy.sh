@@ -15,24 +15,7 @@ echo "📋 Copying configuration files..."
 cp public/_redirects web-build/_redirects
 cp public/_headers web-build/_headers
 
-# Add environment variables to HTML
-echo "🔧 Adding environment variables to HTML..."
-cat > temp_env_script.js << 'EOF'
-// Inject environment variables for web builds
-window.__ENV__ = {
-};
-EOF
-
-# Insert the script into HTML
-sed -i '' '/<script defer="defer" src="\/static\/js\/main.*.js"><\/script>/a\
-<script>\
-// Inject environment variables for web builds\
-window.__ENV__ = {\
-};\
-</script>' web-build/index.html
-
-# Clean up
-rm temp_env_script.js
+# The environment variable injection block and related commands have been removed for Netlify secrets compliance.
 
 echo ""
 echo "✅ Build complete! Your app is ready for deployment."

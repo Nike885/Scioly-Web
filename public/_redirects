@@ -1,0 +1,26 @@
+# Handle all routes for SPA
+/*    /index.html   200
+
+# Specific route handling
+/events    /index.html   200
+/announcements    /index.html   200
+/chat    /index.html   200
+/settings    /index.html   200
+/login    /index.html   200
+/admin    /index.html   200
+/officers    /index.html   200
+/resources    /index.html   200
+/calendar    /index.html   200
+/contact    /index.html   200
+
+# Handle nested routes
+/events/*    /index.html   200
+/announcements/*    /index.html   200
+/chat/*    /index.html   200
+/settings/*    /index.html   200
+/login/*    /index.html   200
+/admin/*    /index.html   200
+/officers/*    /index.html   200
+/resources/*    /index.html   200
+/calendar/*    /index.html   200
+/contact/*    /index.html   200 

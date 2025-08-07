@@ -3,26 +3,30 @@ const createExpoWebpackConfigAsync = require('@expo/webpack-config');
 module.exports = async function (env, argv) {
   const config = await createExpoWebpackConfigAsync(env, argv);
   
-  // Handle problematic modules for web
+  // Fix for 'require is not defined' error
   config.resolve.fallback = {
     ...config.resolve.fallback,
     "fs": false,
     "path": false,
     "crypto": false,
+    "stream": false,
+    "buffer": false,
+    "util": false,
+    "assert": false,
+    "http": false,
+    "https": false,
+    "os": false,
+    "url": false,
   };
 
-  // Add platform-specific file resolution
-  config.resolve.alias = {
-    ...config.resolve.alias,
-    './OfflineService': './OfflineService.web.js',
-    './supabase/supabaseClient': './supabase/supabaseClient.web.js',
-  };
-
-  // Exclude problematic modules from web build
-  config.externals = {
-    ...config.externals,
-    'expo-sqlite': 'expo-sqlite',
-  };
+  // Add global definitions for browser compatibility
+  const webpack = require('webpack');
+  config.plugins.push(
+    new webpack.DefinePlugin({
+      'global': 'globalThis',
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
+    })
+  );
 
   return config;
-}; 
+};

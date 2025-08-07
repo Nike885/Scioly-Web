@@ -114,7 +114,7 @@ export default function HomeScreen({ onNavigate }) {
         {/* Logo Section */}
         <View style={styles.logoSection}>
           <Image 
-            source={require('../assets/images/keyclublogo.png')} 
+            source={require('../../assets/images/keyclublogo.png')} 
             style={styles.logo}
             resizeMode="contain"
           />

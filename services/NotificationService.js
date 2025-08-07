@@ -1,15 +1,21 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform, Alert } from 'react-native';
-import * as Notifications from 'expo-notifications';
+// import * as Notifications from 'expo-notifications';
+let Notifications;
+if (Platform.OS !== 'web') {
+  Notifications = require('expo-notifications');
+}
 
 // Configure notification behavior
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
+if (Platform.OS !== 'web' && Notifications) {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    }),
+  });
+}
 
 class NotificationService {
   constructor() {

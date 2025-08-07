@@ -234,9 +234,9 @@ export default function ChatScreen({ onNavigate }) {
           ]}
         >
           <View style={styles.headerLeft}>
-            <Animatable.View animation="bounceIn" delay={200}>
+            <View>
               <Ionicons name="chatbubbles" size={32} color={colors.primary} />
-            </Animatable.View>
+            </View>
             <View style={styles.headerText}>
               <Text style={[styles.title, { color: colors.text }]}>Live Chat</Text>
               <Text style={[styles.subtitle, { color: colors.textSecondary }] }>

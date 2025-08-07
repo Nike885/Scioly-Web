@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { Video, ResizeMode } from 'expo-av';
 import { Ionicons } from 'react-native-vector-icons/Ionicons';
-import * as Animatable from 'react-native-animatable';
+
 import { useTheme } from '../contexts/ThemeContext';
 
 const { width, height } = Dimensions.get('window');
@@ -172,9 +172,9 @@ const VideoShowcase = ({ onClose }) => {
             {/* Loading Overlay */}
             {isLoading && !error && (
               <View style={styles.loadingOverlay}>
-                <Animatable.View animation="pulse" iterationCount="infinite">
+                <View>
                   <Ionicons name="play-circle" size={48} color="#4299e1" />
-                </Animatable.View>
+                </View>
                 <Text style={[styles.loadingText, { color: colors.text }]}>
                   Loading...
                 </Text>

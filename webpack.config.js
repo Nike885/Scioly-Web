@@ -58,7 +58,7 @@ module.exports = async function (env, argv) {
 
   // Handle node_modules that need JSX and CommonJS transformation
   config.module.rules.push({
-    test: /node_modules\/(react-native-animatable|react-native-vector-icons|expo)\/.*\.js$/,
+    test: /node_modules\/(react-native-vector-icons|expo)\/.*\.js$/,
     use: {
       loader: 'babel-loader',
       options: {

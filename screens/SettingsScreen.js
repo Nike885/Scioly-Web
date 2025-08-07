@@ -1,40 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
-  TextInput,
-  Alert,
-  Switch,
-  Image,
+  ScrollView,
   Platform,
+  Switch,
 } from 'react-native';
-import * as Animatable from 'react-native-animatable';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useTheme } from '../contexts/ThemeContext';
-import { useAuth } from '../contexts/AuthContext';
-import { useOffline } from '../contexts/OfflineContext';
-import { font, spacing, shadows } from '../utils/theme';
-import AnimatedButton from '../components/AnimatedButton';
 
-export default function SettingsScreen({ navigation }) {
-  const { colors, theme, toggleTheme, isDark } = useTheme();
-  const { user, changePassword, logout } = useAuth();
-  const { isOnline, forceOnlineMode, forceOfflineModeEnabled } = useOffline();
-  
-  const [profileData, setProfileData] = useState({
-    displayName: user?.name || '',
-    bio: user?.bio || '',
-    email: user?.email || '',
-  });
-  
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-  });
+import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
+import { useOffline } from '../contexts/OfflineContext';
+
+export default function SettingsScreen({ onNavigate }) {
+  const { colors } = useTheme();
+  const { user, logout } = useAuth();
+  const { isOnline, forceOfflineMode, setForceOfflineMode } = useOffline();
   
   const [notifications, setNotifications] = useState({
     announcements: true,
@@ -42,439 +24,220 @@ export default function SettingsScreen({ navigation }) {
     chat: true,
     reminders: true,
   });
-  
-  const [isEditing, setIsEditing] = useState(false);
-  const [isChangingPassword, setIsChangingPassword] = useState(false);
-  const [forceOffline, setForceOffline] = useState(false);
 
-  const handleProfileSave = async () => {
-    try {
-      // Here you would typically update the user profile in your backend
-      // For now, we'll just show a success message
-      Alert.alert('Success', 'Profile updated successfully!');
-      setIsEditing(false);
-    } catch (error) {
-      Alert.alert('Error', 'Failed to update profile');
-    }
+  const handleLogout = () => {
+    logout();
+    onNavigate('home');
   };
 
-  const handlePasswordChange = async () => {
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      Alert.alert('Error', 'New passwords do not match');
-      return;
-    }
-
-    if (passwordData.newPassword.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters long');
-      return;
-    }
-
-    try {
-      const success = await changePassword(passwordData.currentPassword, passwordData.newPassword);
-      if (success) {
-        setPasswordData({
-          currentPassword: '',
-          newPassword: '',
-          confirmPassword: '',
-        });
-        setIsChangingPassword(false);
-      }
-    } catch (error) {
-      Alert.alert('Error', 'Failed to change password');
-    }
+  const toggleNotification = (key) => {
+    setNotifications(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
   };
-
-  const handleLogout = async () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Logout',
-          style: 'destructive',
-          onPress: async () => {
-            await logout();
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Landing' }],
-            });
-          },
-        },
-      ]
-    );
-  };
-
-  const renderSection = ({ title, icon, children, animationDelay = 0 }) => (
-    <Animatable.View
-      style={styles.section}
-      animation="fadeInUp"
-      delay={animationDelay}
-    >
-      <View style={styles.sectionHeader}>
-        <View style={[styles.sectionIcon, { backgroundColor: colors.primary }]}>
-          <Ionicons name={icon} size={20} color={colors.background} />
-        </View>
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>{title}</Text>
-      </View>
-      {children}
-    </Animatable.View>
-  );
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Header */}
-        <Animatable.View style={styles.header} animation="fadeInDown">
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Ionicons name="arrow-back" size={24} color={colors.text} />
-          </TouchableOpacity>
-          <Text style={[styles.headerTitle, { color: colors.text }]}>Settings</Text>
-          <View style={styles.headerSpacer} />
-        </Animatable.View>
+      {/* Header */}
+      <View style={[styles.header, { backgroundColor: colors.primary }]}>
+        <Text style={styles.headerTitle}>Settings</Text>
+        <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={handleLogout}
+        >
+          <Text style={styles.logoutIcon}>🚪</Text>
+        </TouchableOpacity>
+      </View>
 
-        {/* Profile Section */}
-        {renderSection({
-          title: 'Profile',
-          icon: 'person',
-          animationDelay: 100,
-          children: (
-            <View style={[styles.card, { backgroundColor: colors.card }]}>
-              <View style={styles.profileHeader}>
-                <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
-                  <Ionicons name="person" size={40} color={colors.background} />
-                </View>
-                <View style={styles.profileInfo}>
-                  <Text style={[styles.profileName, { color: colors.text }]}>
-                    {user?.name || 'User'}
-                  </Text>
-                  <Text style={[styles.profileRole, { color: colors.textSecondary }]}>
-                    {user?.sNumber || 'Student'}
-                  </Text>
-                </View>
-                <TouchableOpacity
-                  style={[styles.editButton, { backgroundColor: colors.primary }]}
-                  onPress={() => setIsEditing(!isEditing)}
-                >
-                  <Ionicons name={isEditing ? "checkmark" : "pencil"} size={20} color={colors.background} />
-                </TouchableOpacity>
-              </View>
+      <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+        {/* Connection Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionIcon}>📶</Text>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>Connection</Text>
+          </View>
 
-              {isEditing && (
-                <Animatable.View animation="fadeInUp" style={styles.editForm}>
-                  <View style={styles.inputGroup}>
-                    <Text style={[styles.label, { color: colors.textSecondary }]}>Display Name</Text>
-                    <TextInput
-                      style={[styles.input, { 
-                        backgroundColor: colors.inputBackground,
-                        color: colors.text,
-                        borderColor: colors.border
-                      }]}
-                      value={profileData.displayName}
-                      onChangeText={(text) => setProfileData(prev => ({ ...prev, displayName: text }))}
-                      placeholder="Enter display name"
-                      placeholderTextColor={colors.textSecondary}
-                    />
-                  </View>
-                  
-                  <View style={styles.inputGroup}>
-                    <Text style={[styles.label, { color: colors.textSecondary }]}>Bio</Text>
-                    <TextInput
-                      style={[styles.input, styles.textArea, { 
-                        backgroundColor: colors.inputBackground,
-                        color: colors.text,
-                        borderColor: colors.border
-                      }]}
-                      value={profileData.bio}
-                      onChangeText={(text) => setProfileData(prev => ({ ...prev, bio: text }))}
-                      placeholder="Tell us about yourself..."
-                      placeholderTextColor={colors.textSecondary}
-                      multiline
-                      numberOfLines={3}
-                    />
-                  </View>
-
-                  <AnimatedButton
-                    onPress={handleProfileSave}
-                    style={styles.saveButton}
-                  >
-                    Save Changes
-                  </AnimatedButton>
-                </Animatable.View>
-              )}
-            </View>
-          ),
-        })}
-
-        {/* Theme Section */}
-        {renderSection({
-          title: 'Appearance',
-          icon: 'color-palette',
-          animationDelay: 200,
-          children: (
-            <View style={[styles.card, { backgroundColor: colors.card }]}>
-              <View style={styles.settingRow}>
-                <View style={styles.settingInfo}>
-                  <Ionicons 
-                    name={isDark ? "moon" : "sunny"} 
-                    size={24} 
-                    color={colors.primary} 
-                  />
-                  <View style={styles.settingText}>
-                    <Text style={[styles.settingTitle, { color: colors.text }]}>
-                      Dark Mode
-                    </Text>
-                    <Text style={[styles.settingSubtitle, { color: colors.textSecondary }]}>
-                      Switch between light and dark themes
-                    </Text>
-                  </View>
-                </View>
-                <Switch
-                  value={isDark}
-                  onValueChange={toggleTheme}
-                  trackColor={{ false: colors.border, true: colors.primary }}
-                  thumbColor={isDark ? colors.background : colors.card}
-                />
+          <View style={[styles.settingItem, { backgroundColor: colors.card }]}>
+            <View style={styles.settingLeft}>
+              <Text style={styles.settingIcon}>☁️</Text>
+              <View style={styles.settingInfo}>
+                <Text style={[styles.settingLabel, { color: colors.text }]}>Force Offline Mode</Text>
+                <Text style={[styles.settingDescription, { color: colors.textSecondary }]}>
+                  Currently {isOnline ? 'online' : 'offline'} - messages sent immediately.
+                </Text>
               </View>
             </View>
-          ),
-        })}
+            <Switch
+              value={forceOfflineMode}
+              onValueChange={setForceOfflineMode}
+              trackColor={{ false: '#767577', true: colors.primary }}
+              thumbColor={forceOfflineMode ? '#f4f3f4' : '#f4f3f4'}
+            />
+          </View>
 
-        {/* Offline Mode Section */}
-        {renderSection({
-          title: 'Connection',
-          icon: 'wifi',
-          animationDelay: 250,
-          children: (
-            <View style={[styles.card, { backgroundColor: colors.card }]}>
-              <View style={styles.settingRow}>
-                <View style={styles.settingInfo}>
-                  <Ionicons 
-                    name={forceOffline ? "cloud-offline" : "cloud"} 
-                    size={24} 
-                    color={forceOffline ? colors.error : colors.primary} 
-                  />
-                  <View style={styles.settingText}>
-                    <Text style={[styles.settingTitle, { color: colors.text }]}>
-                      Force Offline Mode
-                    </Text>
-                    <Text style={[styles.settingSubtitle, { color: colors.textSecondary }]}>
-                      {forceOffline ? 'Currently offline - messages will be queued' : 'Currently online - messages sent immediately'}
-                    </Text>
-                  </View>
-                </View>
-                <Switch
-                  value={forceOffline}
-                  onValueChange={(value) => {
-                    setForceOffline(value);
-                    if (value) {
-                      forceOfflineModeEnabled();
-                      Alert.alert('Offline Mode', 'App is now in offline mode. Messages will be queued until you go back online.');
-                    } else {
-                      forceOnlineMode();
-                      Alert.alert('Online Mode', 'App is now online. Queued messages will be sent.');
-                    }
-                  }}
-                  trackColor={{ false: colors.border, true: colors.error }}
-                  thumbColor={forceOffline ? colors.background : colors.card}
-                />
-              </View>
-              <View style={styles.settingRow}>
-                <View style={styles.settingInfo}>
-                  <Ionicons 
-                    name={isOnline ? "checkmark-circle" : "close-circle"} 
-                    size={24} 
-                    color={isOnline ? colors.success : colors.error} 
-                  />
-                  <View style={styles.settingText}>
-                    <Text style={[styles.settingTitle, { color: colors.text }]}>
-                      Network Status
-                    </Text>
-                    <Text style={[styles.settingSubtitle, { color: colors.textSecondary }]}>
-                      {isOnline ? 'Connected to internet' : 'No internet connection'}
-                    </Text>
-                  </View>
-                </View>
+          <View style={[styles.settingItem, { backgroundColor: colors.card }]}>
+            <View style={styles.settingLeft}>
+              <Text style={styles.settingIcon}>✅</Text>
+              <View style={styles.settingInfo}>
+                <Text style={[styles.settingLabel, { color: colors.text }]}>Network Status</Text>
+                <Text style={[styles.settingDescription, { color: colors.textSecondary }]}>
+                  Connected to internet.
+                </Text>
               </View>
             </View>
-          ),
-        })}
+          </View>
+        </View>
 
         {/* Notifications Section */}
-        {renderSection({
-          title: 'Notifications',
-          icon: 'notifications',
-          animationDelay: 300,
-          children: (
-            <View style={[styles.card, { backgroundColor: colors.card }]}>
-              {Object.entries(notifications).map(([key, value]) => (
-                <View key={key} style={styles.settingRow}>
-                  <View style={styles.settingInfo}>
-                    <Ionicons 
-                      name={
-                        key === 'announcements' ? 'megaphone' :
-                        key === 'events' ? 'calendar' :
-                        key === 'chat' ? 'chatbubbles' :
-                        'alarm'
-                      } 
-                      size={24} 
-                      color={colors.primary} 
-                    />
-                    <View style={styles.settingText}>
-                      <Text style={[styles.settingTitle, { color: colors.text }]}>
-                        {key.charAt(0).toUpperCase() + key.slice(1)}
-                      </Text>
-                      <Text style={[styles.settingSubtitle, { color: colors.textSecondary }]}>
-                        Receive notifications for {key}
-                      </Text>
-                    </View>
-                  </View>
-                  <Switch
-                    value={value}
-                    onValueChange={(newValue) => 
-                      setNotifications(prev => ({ ...prev, [key]: newValue }))
-                    }
-                    trackColor={{ false: colors.border, true: colors.primary }}
-                    thumbColor={value ? colors.background : colors.card}
-                  />
-                </View>
-              ))}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionIcon}>🔔</Text>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>Notifications</Text>
+          </View>
+
+          <View style={[styles.settingItem, { backgroundColor: colors.card }]}>
+            <View style={styles.settingLeft}>
+              <Text style={styles.settingIcon}>📢</Text>
+              <View style={styles.settingInfo}>
+                <Text style={[styles.settingLabel, { color: colors.text }]}>Announcements</Text>
+                <Text style={[styles.settingDescription, { color: colors.textSecondary }]}>
+                  Receive notifications for announcements.
+                </Text>
+              </View>
             </View>
-          ),
-        })}
+            <Switch
+              value={notifications.announcements}
+              onValueChange={() => toggleNotification('announcements')}
+              trackColor={{ false: '#767577', true: colors.primary }}
+              thumbColor={notifications.announcements ? '#f4f3f4' : '#f4f3f4'}
+            />
+          </View>
+
+          <View style={[styles.settingItem, { backgroundColor: colors.card }]}>
+            <View style={styles.settingLeft}>
+              <Text style={styles.settingIcon}>📅</Text>
+              <View style={styles.settingInfo}>
+                <Text style={[styles.settingLabel, { color: colors.text }]}>Events</Text>
+                <Text style={[styles.settingDescription, { color: colors.textSecondary }]}>
+                  Receive notifications for events.
+                </Text>
+              </View>
+            </View>
+            <Switch
+              value={notifications.events}
+              onValueChange={() => toggleNotification('events')}
+              trackColor={{ false: '#767577', true: colors.primary }}
+              thumbColor={notifications.events ? '#f4f3f4' : '#f4f3f4'}
+            />
+          </View>
+
+          <View style={[styles.settingItem, { backgroundColor: colors.card }]}>
+            <View style={styles.settingLeft}>
+              <Text style={styles.settingIcon}>💬</Text>
+              <View style={styles.settingInfo}>
+                <Text style={[styles.settingLabel, { color: colors.text }]}>Chat</Text>
+                <Text style={[styles.settingDescription, { color: colors.textSecondary }]}>
+                  Receive notifications for chat.
+                </Text>
+              </View>
+            </View>
+            <Switch
+              value={notifications.chat}
+              onValueChange={() => toggleNotification('chat')}
+              trackColor={{ false: '#767577', true: colors.primary }}
+              thumbColor={notifications.chat ? '#f4f3f4' : '#f4f3f4'}
+            />
+          </View>
+
+          <View style={[styles.settingItem, { backgroundColor: colors.card }]}>
+            <View style={styles.settingLeft}>
+              <Text style={styles.settingIcon}>⏰</Text>
+              <View style={styles.settingInfo}>
+                <Text style={[styles.settingLabel, { color: colors.text }]}>Reminders</Text>
+                <Text style={[styles.settingDescription, { color: colors.textSecondary }]}>
+                  Receive notifications for reminders.
+                </Text>
+              </View>
+            </View>
+            <Switch
+              value={notifications.reminders}
+              onValueChange={() => toggleNotification('reminders')}
+              trackColor={{ false: '#767577', true: colors.primary }}
+              thumbColor={notifications.reminders ? '#f4f3f4' : '#f4f3f4'}
+            />
+          </View>
+        </View>
 
         {/* Security Section */}
-        {renderSection({
-          title: 'Security',
-          icon: 'shield-checkmark',
-          animationDelay: 400,
-          children: (
-            <View style={[styles.card, { backgroundColor: colors.card }]}>
-              <TouchableOpacity
-                style={styles.settingRow}
-                onPress={() => setIsChangingPassword(!isChangingPassword)}
-              >
-                <View style={styles.settingInfo}>
-                  <Ionicons name="key" size={24} color={colors.primary} />
-                  <View style={styles.settingText}>
-                    <Text style={[styles.settingTitle, { color: colors.text }]}>
-                      Change Password
-                    </Text>
-                    <Text style={[styles.settingSubtitle, { color: colors.textSecondary }]}>
-                      Update your account password
-                    </Text>
-                  </View>
-                </View>
-                <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
-              </TouchableOpacity>
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionIcon}>🛡️</Text>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>Security</Text>
+          </View>
 
-              {isChangingPassword && (
-                <Animatable.View animation="fadeInUp" style={styles.passwordForm}>
-                  <View style={styles.inputGroup}>
-                    <Text style={[styles.label, { color: colors.textSecondary }]}>Current Password</Text>
-                    <TextInput
-                      style={[styles.input, { 
-                        backgroundColor: colors.inputBackground,
-                        color: colors.text,
-                        borderColor: colors.border
-                      }]}
-                      value={passwordData.currentPassword}
-                      onChangeText={(text) => setPasswordData(prev => ({ ...prev, currentPassword: text }))}
-                      placeholder="Enter current password"
-                      placeholderTextColor={colors.textSecondary}
-                      secureTextEntry
-                    />
-                  </View>
-                  
-                  <View style={styles.inputGroup}>
-                    <Text style={[styles.label, { color: colors.textSecondary }]}>New Password</Text>
-                    <TextInput
-                      style={[styles.input, { 
-                        backgroundColor: colors.inputBackground,
-                        color: colors.text,
-                        borderColor: colors.border
-                      }]}
-                      value={passwordData.newPassword}
-                      onChangeText={(text) => setPasswordData(prev => ({ ...prev, newPassword: text }))}
-                      placeholder="Enter new password"
-                      placeholderTextColor={colors.textSecondary}
-                      secureTextEntry
-                    />
-                  </View>
-                  
-                  <View style={styles.inputGroup}>
-                    <Text style={[styles.label, { color: colors.textSecondary }]}>Confirm New Password</Text>
-                    <TextInput
-                      style={[styles.input, { 
-                        backgroundColor: colors.inputBackground,
-                        color: colors.text,
-                        borderColor: colors.border
-                      }]}
-                      value={passwordData.confirmPassword}
-                      onChangeText={(text) => setPasswordData(prev => ({ ...prev, confirmPassword: text }))}
-                      placeholder="Confirm new password"
-                      placeholderTextColor={colors.textSecondary}
-                      secureTextEntry
-                    />
-                  </View>
-
-                  <AnimatedButton
-                    onPress={handlePasswordChange}
-                    style={styles.saveButton}
-                  >
-                    Update Password
-                  </AnimatedButton>
-                </Animatable.View>
-              )}
+          <TouchableOpacity style={[styles.settingItem, { backgroundColor: colors.card }]}>
+            <View style={styles.settingLeft}>
+              <Text style={styles.settingIcon}>🔑</Text>
+              <View style={styles.settingInfo}>
+                <Text style={[styles.settingLabel, { color: colors.text }]}>Change Password</Text>
+                <Text style={[styles.settingDescription, { color: colors.textSecondary }]}>
+                  Update your account password.
+                </Text>
+              </View>
             </View>
-          ),
-        })}
+            <Text style={styles.settingArrow}>▶</Text>
+          </TouchableOpacity>
+        </View>
 
         {/* About Section */}
-        {renderSection({
-          title: 'About',
-          icon: 'information-circle',
-          animationDelay: 500,
-          children: (
-            <View style={[styles.card, { backgroundColor: colors.card }]}>
-              <View style={styles.aboutItem}>
-                <Text style={[styles.aboutLabel, { color: colors.textSecondary }]}>App Version</Text>
-                <Text style={[styles.aboutValue, { color: colors.text }]}>1.0.0</Text>
-              </View>
-              <View style={styles.aboutItem}>
-                <Text style={[styles.aboutLabel, { color: colors.textSecondary }]}>Build Number</Text>
-                <Text style={[styles.aboutValue, { color: colors.text }]}>2024.1</Text>
-              </View>
-              <View style={styles.aboutItem}>
-                <Text style={[styles.aboutLabel, { color: colors.textSecondary }]}>Founder & Creator</Text>
-                <Text style={[styles.aboutValue, { color: colors.text }]}>Nikhilesh Gnanaraj</Text>
-              </View>
-              <View style={styles.aboutItem}>
-                <Text style={[styles.aboutLabel, { color: colors.textSecondary }]}>Development</Text>
-                <Text style={[styles.aboutValue, { color: colors.text }]}>React Native & Expo</Text>
-              </View>
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionIcon}>ℹ️</Text>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>About</Text>
+          </View>
+
+          <View style={[styles.settingItem, { backgroundColor: colors.card }]}>
+            <View style={styles.settingLeft}>
+              <Text style={styles.settingLabel}>App Version</Text>
             </View>
-          ),
-        })}
+            <Text style={[styles.settingValue, { color: colors.textSecondary }]}>1.0.0</Text>
+          </View>
+
+          <View style={[styles.settingItem, { backgroundColor: colors.card }]}>
+            <View style={styles.settingLeft}>
+              <Text style={styles.settingLabel}>Build Number</Text>
+            </View>
+            <Text style={[styles.settingValue, { color: colors.textSecondary }]}>2024.1</Text>
+          </View>
+
+          <View style={[styles.settingItem, { backgroundColor: colors.card }]}>
+            <View style={styles.settingLeft}>
+              <Text style={styles.settingLabel}>Founder & Creator</Text>
+            </View>
+            <Text style={[styles.settingValue, { color: colors.textSecondary }]}>Nikhilesh Gnanaraj</Text>
+          </View>
+
+          <View style={[styles.settingItem, { backgroundColor: colors.card }]}>
+            <View style={styles.settingLeft}>
+              <Text style={styles.settingLabel}>Development</Text>
+            </View>
+            <Text style={[styles.settingValue, { color: colors.textSecondary }]}>React Native & Expo</Text>
+          </View>
+        </View>
 
         {/* Logout Button */}
-        <Animatable.View animation="fadeInUp" delay={600} style={styles.logoutContainer}>
-          <AnimatedButton
-            onPress={handleLogout}
-            style={[styles.logoutButton, { backgroundColor: colors.error }]}
-            variant="error"
-          >
-            <Ionicons name="log-out-outline" size={20} color={colors.background} />
-            <Text style={[styles.logoutText, { color: colors.background }]}>Logout</Text>
-          </AnimatedButton>
-        </Animatable.View>
+        <TouchableOpacity
+          style={[styles.logoutButtonLarge, { backgroundColor: '#FF6B6B' }]}
+          onPress={handleLogout}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.logoutIconLarge}>🚪</Text>
+          <Text style={[styles.logoutText, { color: '#FFFFFF' }]}>Logout</Text>
+        </TouchableOpacity>
+
+        {/* Bottom spacing for navigation */}
+        <View style={styles.bottomSpacing} />
       </ScrollView>
     </View>
   );
@@ -484,165 +247,113 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 40,
-  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === 'ios' ? 60 : 20,
-    paddingBottom: 20,
-  },
-  backButton: {
-    padding: 8,
+    paddingTop: Platform.OS === 'web' ? 20 : 60,
+    paddingBottom: 15,
+    paddingVertical: 15,
   },
   headerTitle: {
-    fontSize: font.size.title,
-    fontWeight: font.weight.bold,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
   },
-  headerSpacer: {
-    width: 40,
+  logoutButton: {
+    padding: 8,
+  },
+  logoutIcon: {
+    fontSize: 20,
+  },
+  scrollContainer: {
+    flex: 1,
   },
   section: {
-    marginBottom: 24,
-    paddingHorizontal: 20,
+    marginBottom: 30,
   },
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    paddingHorizontal: 20,
+    marginBottom: 15,
   },
   sectionIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+    fontSize: 20,
     marginRight: 12,
   },
   sectionTitle: {
-    fontSize: font.size.title,
-    fontWeight: font.weight.bold,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
-  card: {
-    borderRadius: 16,
-    padding: 20,
-    ...shadows.medium,
-  },
-  profileHeader: {
+  settingItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    marginHorizontal: 20,
+    marginBottom: 8,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+  settingLeft: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    flex: 1,
+  },
+  settingIcon: {
+    fontSize: 20,
     marginRight: 16,
   },
-  profileInfo: {
+  settingInfo: {
     flex: 1,
   },
-  profileName: {
-    fontSize: font.size.title,
-    fontWeight: font.weight.bold,
+  settingLabel: {
+    fontSize: 16,
+    fontWeight: '500',
     marginBottom: 4,
   },
-  profileRole: {
-    fontSize: font.size.body,
+  settingDescription: {
+    fontSize: 14,
   },
-  editButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+  settingValue: {
+    fontSize: 16,
+    fontWeight: '500',
   },
-  editForm: {
-    marginTop: 16,
+  settingArrow: {
+    fontSize: 16,
+    color: '#666',
   },
-  inputGroup: {
-    marginBottom: 16,
-  },
-  label: {
-    fontSize: font.size.small,
-    fontWeight: font.weight.semibold,
-    marginBottom: 8,
-  },
-  input: {
-    fontSize: font.size.body,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 12,
-    borderWidth: 1,
-  },
-  textArea: {
-    height: 80,
-    textAlignVertical: 'top',
-  },
-  saveButton: {
-    marginTop: 8,
-  },
-  settingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-  },
-  settingInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  settingText: {
-    marginLeft: 12,
-    flex: 1,
-  },
-  settingTitle: {
-    fontSize: font.size.body,
-    fontWeight: font.weight.semibold,
-    marginBottom: 2,
-  },
-  settingSubtitle: {
-    fontSize: font.size.small,
-  },
-  passwordForm: {
-    marginTop: 16,
-  },
-  aboutItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  aboutLabel: {
-    fontSize: font.size.body,
-  },
-  aboutValue: {
-    fontSize: font.size.body,
-    fontWeight: font.weight.semibold,
-  },
-  logoutContainer: {
-    paddingHorizontal: 20,
-    marginTop: 20,
-  },
-  logoutButton: {
+  logoutButtonLarge: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 16,
+    paddingHorizontal: 32,
+    marginHorizontal: 20,
+    marginTop: 20,
     borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  logoutIconLarge: {
+    fontSize: 20,
+    marginRight: 12,
   },
   logoutText: {
-    fontSize: font.size.body,
-    fontWeight: font.weight.bold,
-    marginLeft: 8,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  bottomSpacing: {
+    height: 100,
   },
 }); 

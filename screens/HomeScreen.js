@@ -13,7 +13,6 @@ import {
   Dimensions,
   Alert
 } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { useAuth } from '../contexts/AuthContext';
 import { useEvents } from '../contexts/EventsContext';
@@ -74,169 +73,161 @@ export default function HomeScreen({ onNavigate }) {
   };
 
   return (
-    <ScrollView
-      style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={styles.scrollContent}
-      showsVerticalScrollIndicator={false}
-    >
-      {/* Offline Status Indicator */}
-      <OfflineStatusIndicator />
-
-      {/* Header with Settings Button */}
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <Text style={[styles.welcomeText, { color: colors.textSecondary }]}>
-            Welcome back,
-          </Text>
-          <Text style={[styles.userName, { color: colors.text }]}>
-            {user?.name || 'User'}!
-          </Text>
-        </View>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      {/* Header */}
+      <View style={[styles.header, { backgroundColor: colors.primary }]}>
+        <Text style={styles.headerTitle}>Home</Text>
         <TouchableOpacity
-          style={[styles.settingsButton, { backgroundColor: colors.primary }]}
-          onPress={() => onNavigate('admin')}
+          style={styles.logoutButton}
+          onPress={() => onNavigate('settings')}
         >
-          <Ionicons name="settings-outline" size={24} color={colors.background} />
+          <Text style={styles.logoutIcon}>🚪</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Unread Announcements Banner */}
-      {showBanner && unreadAnnouncements > 0 && (
-        <View 
-          style={styles.bannerWrap}
-        >
+      <ScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Offline Status Indicator */}
+        <OfflineStatusIndicator />
+
+        {/* Welcome Section */}
+        <View style={styles.welcomeSection}>
+          <View style={styles.welcomeLeft}>
+            <Text style={[styles.welcomeText, { color: colors.textSecondary }]}>
+              Welcome back,
+            </Text>
+            <Text style={[styles.userName, { color: colors.text }]}>
+              {user?.name || 'Nikhilesh Gnanaraj'}!
+            </Text>
+          </View>
           <TouchableOpacity
-            style={[styles.banner, { backgroundColor: colors.accent }]}
-            onPress={handleAnnouncementPress}
-            activeOpacity={0.8}
+            style={[styles.settingsButton, { backgroundColor: colors.primary }]}
+            onPress={() => onNavigate('settings')}
           >
-            <Ionicons name="megaphone" size={24} color={colors.background} />
-            <View style={styles.bannerContent}>
-              <Text style={[styles.bannerTitle, { color: colors.background }]}>
-                New Announcements!
-              </Text>
-              <Text style={[styles.bannerText, { color: colors.background }]}>
-                {unreadAnnouncements} unread announcement{unreadAnnouncements > 1 ? 's' : ''}
-              </Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color={colors.background} />
+            <Text style={styles.settingsIcon}>⚙️</Text>
           </TouchableOpacity>
         </View>
-      )}
 
-      {/* Logo Section */}
-      <View style={styles.logoWrap}>
-        <img 
-          src="./assets/images/keyclublogo.png" 
-          style={styles.logo}
-          alt="Logo"
-        />
-      </View>
+        {/* Logo Section */}
+        <View style={styles.logoSection}>
+          <img 
+            src="./assets/images/keyclublogo.png" 
+            style={styles.logo}
+            alt="Science Olympiad Logo"
+          />
+        </View>
 
-      {/* Welcome Text */}
-      <Text style={[styles.welcome, { color: colors.secondary }]}>
-        Welcome to
-      </Text>
-      <Text style={[styles.title, { color: colors.text }]}>
-        Cypress Ranch Science Olympiad
-      </Text>
-
-      {/* Subtitle Card */}
-      <AnimatedCard style={[styles.card, { backgroundColor: colors.card }]} animationDelay={600}>
-        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-          Access resources, stay prepared, and stay connected with your team. 
-          Explore events, announcements, and everything you need to succeed in Science Olympiad.
+        {/* Welcome Text */}
+        <Text style={[styles.welcomeTo, { color: colors.secondary }]}>
+          Welcome to
         </Text>
-      </AnimatedCard>
+        <Text style={[styles.mainTitle, { color: colors.text }]}>
+          Cypress Ranch Science Olympiad
+        </Text>
 
-      {/* Quick Actions */}
-      <View style={styles.quickActions}>
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>Quick Actions</Text>
-        
-        <View style={styles.actionGrid}>
-                           <TouchableOpacity
-                   style={[styles.actionCard, { backgroundColor: colors.card }]}
-                   onPress={() => onNavigate(isAdmin ? 'admin' : 'quiz')}
-                   activeOpacity={0.8}
-                 >
-                   <Ionicons name={isAdmin ? "analytics" : "school"} size={32} color={colors.primary} />
-                   <Text style={[styles.actionTitle, { color: colors.text }]}>
-                     {isAdmin ? 'Quiz Results' : 'Daily Quiz'}
-                   </Text>
-                   <Text style={[styles.actionSubtitle, { color: colors.textSecondary }]}>
-                     {isAdmin ? 'View student scores' : 'Test your knowledge'}
-                   </Text>
-                 </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.actionCard, { backgroundColor: colors.card }]}
-            onPress={() => onNavigate('resources')}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="logo-instagram" size={32} color="#E4405F" />
-            <Text style={[styles.actionTitle, { color: colors.text }]}>Follow Us</Text>
-            <Text style={[styles.actionSubtitle, { color: colors.textSecondary }]}>Instagram</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.actionCard, { backgroundColor: colors.card }]}
-            onPress={() => onNavigate('chat')}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="chatbubbles" size={32} color={colors.accent} />
-            <Text style={[styles.actionTitle, { color: colors.text }]}>Chat</Text>
-            <Text style={[styles.actionSubtitle, { color: colors.textSecondary }]}>Team communication</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.actionCard, { backgroundColor: colors.card }]}
-            onPress={() => onNavigate('resources')}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="videocam" size={32} color="#4299e1" />
-            <Text style={[styles.actionTitle, { color: colors.text }]}>Scioly Moments</Text>
-            <Text style={[styles.actionSubtitle, { color: colors.textSecondary }]}>Watch highlights</Text>
-          </TouchableOpacity>
-
-                           <TouchableOpacity
-                   style={[styles.actionCard, { backgroundColor: colors.card }]}
-                   onPress={() => onNavigate('announcements')}
-                   activeOpacity={0.8}
-                 >
-            <Ionicons name="megaphone" size={32} color={colors.info} />
-            <Text style={[styles.actionTitle, { color: colors.text }]}>Updates</Text>
-            <Text style={[styles.actionSubtitle, { color: colors.textSecondary }]}>Latest news</Text>
-          </TouchableOpacity>
+        {/* Description Card */}
+        <View style={[styles.descriptionCard, { backgroundColor: colors.card }]}>
+          <Text style={[styles.descriptionText, { color: colors.textSecondary }]}>
+            Access resources, stay prepared, and stay connected with your team. 
+            Explore events, announcements, and everything you need to succeed in Science Olympiad.
+          </Text>
         </View>
-      </View>
 
-      {/* Admin Quick Actions */}
-      {isAdmin && (
-        <View style={styles.adminSection}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>Admin Tools</Text>
+        {/* Quick Actions */}
+        <View style={styles.quickActions}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Quick Actions</Text>
           
-          <View style={styles.adminActions}>
+          <View style={styles.actionGrid}>
             <TouchableOpacity
-              style={[styles.adminCard, { backgroundColor: colors.primary }]}
+              style={[styles.actionCard, { backgroundColor: colors.card }]}
+              onPress={() => onNavigate(isAdmin ? 'quiz' : 'quiz')}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.actionIcon}>🎓</Text>
+              <Text style={[styles.actionTitle, { color: colors.text }]}>
+                {isAdmin ? 'Quiz Results' : 'Daily Quiz'}
+              </Text>
+              <Text style={[styles.actionSubtitle, { color: colors.textSecondary }]}>
+                {isAdmin ? 'View student scores' : 'Test your knowledge'}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.actionCard, { backgroundColor: colors.card }]}
+              onPress={() => onNavigate('contact')}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.actionIcon}>📸</Text>
+              <Text style={[styles.actionTitle, { color: colors.text }]}>Follow Us</Text>
+              <Text style={[styles.actionSubtitle, { color: colors.textSecondary }]}>Instagram</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.actionCard, { backgroundColor: colors.card }]}
+              onPress={() => onNavigate('chat')}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.actionIcon}>💬</Text>
+              <Text style={[styles.actionTitle, { color: colors.text }]}>Chat</Text>
+              <Text style={[styles.actionSubtitle, { color: colors.textSecondary }]}>Team communication</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.actionCard, { backgroundColor: colors.card }]}
+              onPress={() => onNavigate('resources')}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.actionIcon}>🎥</Text>
+              <Text style={[styles.actionTitle, { color: colors.text }]}>Scioly Moments</Text>
+              <Text style={[styles.actionSubtitle, { color: colors.textSecondary }]}>Watch highlights</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.actionCard, { backgroundColor: colors.card }]}
               onPress={() => onNavigate('announcements')}
               activeOpacity={0.8}
             >
-              <Ionicons name="add-circle" size={24} color={colors.text} />
-              <Text style={[styles.adminCardText, { color: colors.text }]}>Create Event</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.adminCard, { backgroundColor: colors.secondary }]}
-              onPress={() => navigation.navigate('CreateAnnouncement')}
-              activeOpacity={0.8}
-            >
-              <Ionicons name="megaphone" size={24} color={colors.text} />
-              <Text style={[styles.adminCardText, { color: colors.text }]}>New Announcement</Text>
+              <Text style={styles.actionIcon}>📢</Text>
+              <Text style={[styles.actionTitle, { color: colors.text }]}>Updates</Text>
+              <Text style={[styles.actionSubtitle, { color: colors.textSecondary }]}>Latest news</Text>
             </TouchableOpacity>
           </View>
         </View>
-      )}
-    </ScrollView>
+
+        {/* Admin Quick Actions */}
+        {isAdmin && (
+          <View style={styles.adminSection}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>Admin Tools</Text>
+            
+            <View style={styles.adminActions}>
+              <TouchableOpacity
+                style={[styles.adminCard, { backgroundColor: colors.primary }]}
+                onPress={() => onNavigate('calendar')}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.adminIcon}>➕</Text>
+                <Text style={[styles.adminCardText, { color: colors.text }]}>Create Event</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.adminCard, { backgroundColor: colors.secondary }]}
+                onPress={() => onNavigate('announcements')}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.adminIcon}>📢</Text>
+                <Text style={[styles.adminCardText, { color: colors.text }]}>New Announcement</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
+        {/* Bottom spacing for navigation */}
+        <View style={styles.bottomSpacing} />
+      </ScrollView>
+    </View>
   );
 }
 
@@ -244,27 +235,50 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  scrollContent: {
-    paddingBottom: 40,
-  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === 'ios' ? 60 : 30,
+    paddingTop: Platform.OS === 'web' ? 20 : 60,
+    paddingBottom: 15,
+    paddingVertical: 15,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  logoutButton: {
+    padding: 8,
+  },
+  logoutIcon: {
+    fontSize: 20,
+  },
+  scrollContainer: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 100, // Space for navigation
+  },
+  welcomeSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 20,
     paddingBottom: 20,
   },
-  headerLeft: {
+  welcomeLeft: {
     flex: 1,
   },
   welcomeText: {
-    fontSize: font.size.body,
-    fontWeight: font.weight.regular,
+    fontSize: 16,
+    fontWeight: '400',
   },
   userName: {
-    fontSize: font.size.title,
-    fontWeight: font.weight.bold,
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   settingsButton: {
     width: 44,
@@ -273,89 +287,55 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  bannerWrap: {
-    width: '100%',
+  settingsIcon: {
+    fontSize: 20,
+  },
+  logoSection: {
     alignItems: 'center',
     marginBottom: 20,
-    zIndex: 10,
-  },
-  banner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 18,
-    paddingVertical: 16,
-    paddingHorizontal: 22,
-    marginHorizontal: 18,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.18,
-    shadowRadius: 12,
-    elevation: 8,
-    minWidth: 320,
-    maxWidth: 420,
-  },
-  bannerContent: {
-    flex: 1,
-    marginLeft: 12,
-  },
-  bannerTitle: {
-    fontWeight: 'bold',
-    fontSize: 18,
-    marginBottom: 2,
-    letterSpacing: 0.5,
-  },
-  bannerText: {
-    fontSize: 15,
-    fontWeight: '600',
-    letterSpacing: 0.2,
-  },
-  logoWrap: {
-    marginBottom: 18,
-    alignItems: 'center',
-    width: '100%',
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
   },
   logo: {
     width: 180,
     height: 120,
     alignSelf: 'center',
   },
-  welcome: {
-    fontSize: font.size.body + 2,
-    fontWeight: font.weight.bold,
-    fontFamily: font.family,
-    letterSpacing: 0.5,
+  welcomeTo: {
+    fontSize: 18,
+    fontWeight: 'bold',
     textAlign: 'center',
+    marginBottom: 6,
   },
-  title: {
-    fontSize: font.size.header,
-    fontWeight: font.weight.bold,
-    marginTop: 6,
-    marginBottom: 2,
-    fontFamily: font.family,
-    letterSpacing: 0.8,
+  mainTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
     textAlign: 'center',
-  },
-  card: {
-    marginTop: 18,
-    width: '100%',
-    alignSelf: 'center',
-    paddingHorizontal: 10,
-  },
-  subtitle: {
-    fontSize: font.size.body + 1,
-    fontFamily: font.family,
-    textAlign: 'center',
-    letterSpacing: 0.3,
-    paddingVertical: 10,
-  },
-  quickActions: {
-    marginTop: 32,
+    marginBottom: 20,
     paddingHorizontal: 20,
   },
+  descriptionCard: {
+    marginHorizontal: 20,
+    padding: 20,
+    borderRadius: 16,
+    marginBottom: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  descriptionText: {
+    fontSize: 16,
+    textAlign: 'center',
+    lineHeight: 24,
+  },
+  quickActions: {
+    paddingHorizontal: 20,
+    marginBottom: 30,
+  },
   sectionTitle: {
-    fontSize: font.size.title,
-    fontWeight: font.weight.bold,
+    fontSize: 22,
+    fontWeight: 'bold',
     marginBottom: 16,
   },
   actionGrid: {
@@ -375,19 +355,23 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
   },
+  actionIcon: {
+    fontSize: 32,
+    marginBottom: 12,
+  },
   actionTitle: {
-    fontSize: font.size.body,
-    fontWeight: font.weight.bold,
-    marginTop: 12,
+    fontSize: 16,
+    fontWeight: 'bold',
     marginBottom: 4,
+    textAlign: 'center',
   },
   actionSubtitle: {
-    fontSize: font.size.small,
+    fontSize: 14,
     textAlign: 'center',
   },
   adminSection: {
-    marginTop: 20,
     paddingHorizontal: 20,
+    marginBottom: 30,
   },
   adminActions: {
     flexDirection: 'row',
@@ -404,11 +388,17 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     minHeight: 60,
   },
+  adminIcon: {
+    fontSize: 20,
+    marginRight: 8,
+  },
   adminCardText: {
-    fontSize: font.size.small,
-    fontWeight: font.weight.bold,
-    marginLeft: 8,
+    fontSize: 14,
+    fontWeight: 'bold',
     textAlign: 'center',
     flexShrink: 1,
+  },
+  bottomSpacing: {
+    height: 20,
   },
 });

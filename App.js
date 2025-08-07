@@ -8,7 +8,6 @@ import { OfflineProvider } from './contexts/OfflineContext';
 import { lightColors, darkColors, font } from './utils/theme';
 import ErrorBoundary from './components/ErrorBoundary';
 
-
 // Import screens
 import HomeScreen from './screens/HomeScreen';
 import AnnouncementsScreen from './screens/AnnouncementsScreen';
@@ -17,6 +16,9 @@ import OfficersScreen from './screens/OfficersScreen';
 import UnifiedResourcesScreen from './screens/UnifiedResourcesScreen';
 import ChatScreen from './screens/ChatScreen';
 import AdminLoginScreen from './screens/AdminLoginScreen';
+import CalendarScreen from './screens/CalendarScreen';
+import ContactScreen from './screens/ContactScreen';
+import SettingsScreen from './screens/SettingsScreen';
 
 function AppContent() {
   const { colors, isDark } = useTheme();
@@ -34,24 +36,18 @@ function AppContent() {
     return (
       <View style={[styles.splashContainer, { backgroundColor: colors.primary }]}>
         <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
-        <View
-          style={styles.logoCircle}
-        >
+        <View style={styles.logoCircle}>
           <img
             src="./assets/images/keyclublogo.png"
             style={styles.logo}
             alt="Logo"
           />
         </View>
-        <Text
-          style={styles.splashTitle}
-        >
-          Cypress Ranch Scioly
+        <Text style={styles.splashTitle}>
+          Cypress Ranch Science Olympiad
         </Text>
-        <Text
-          style={styles.splashSubtitle}
-        >
-          Vibrant. Connected. Inspired.
+        <Text style={styles.splashSubtitle}>
+          Access Resources, Stay prepared, Stay connected.
         </Text>
       </View>
     );
@@ -61,14 +57,20 @@ function AppContent() {
     switch (currentScreen) {
       case 'home':
         return <HomeScreen onNavigate={setCurrentScreen} />;
+      case 'calendar':
+        return <CalendarScreen onNavigate={setCurrentScreen} />;
+      case 'resources':
+        return <UnifiedResourcesScreen onNavigate={setCurrentScreen} />;
+      case 'officers':
+        return <OfficersScreen onNavigate={setCurrentScreen} />;
+      case 'contact':
+        return <ContactScreen onNavigate={setCurrentScreen} />;
+      case 'settings':
+        return <SettingsScreen onNavigate={setCurrentScreen} />;
       case 'announcements':
         return <AnnouncementsScreen onNavigate={setCurrentScreen} />;
       case 'quiz':
         return <DailyQuizScreen onNavigate={setCurrentScreen} />;
-      case 'officers':
-        return <OfficersScreen onNavigate={setCurrentScreen} />;
-      case 'resources':
-        return <UnifiedResourcesScreen onNavigate={setCurrentScreen} />;
       case 'chat':
         return <ChatScreen onNavigate={setCurrentScreen} />;
       case 'admin':
@@ -84,35 +86,27 @@ function AppContent() {
         style={[styles.navItem, currentScreen === 'home' && styles.activeNavItem]} 
         onPress={() => setCurrentScreen('home')}
       >
+        <View style={styles.navIconContainer}>
+          <Text style={[styles.navIcon, { color: currentScreen === 'home' ? colors.primary : colors.textSecondary }]}>
+            🏠
+          </Text>
+        </View>
         <Text style={[styles.navText, { color: currentScreen === 'home' ? colors.primary : colors.textSecondary }]}>
           Home
         </Text>
       </TouchableOpacity>
       
       <TouchableOpacity 
-        style={[styles.navItem, currentScreen === 'announcements' && styles.activeNavItem]} 
-        onPress={() => setCurrentScreen('announcements')}
+        style={[styles.navItem, currentScreen === 'calendar' && styles.activeNavItem]} 
+        onPress={() => setCurrentScreen('calendar')}
       >
-        <Text style={[styles.navText, { color: currentScreen === 'announcements' ? colors.primary : colors.textSecondary }]}>
-          Announcements
-        </Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity 
-        style={[styles.navItem, currentScreen === 'quiz' && styles.activeNavItem]} 
-        onPress={() => setCurrentScreen('quiz')}
-      >
-        <Text style={[styles.navText, { color: currentScreen === 'quiz' ? colors.primary : colors.textSecondary }]}>
-          Quiz
-        </Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity 
-        style={[styles.navItem, currentScreen === 'officers' && styles.activeNavItem]} 
-        onPress={() => setCurrentScreen('officers')}
-      >
-        <Text style={[styles.navText, { color: currentScreen === 'officers' ? colors.primary : colors.textSecondary }]}>
-          Officers
+        <View style={styles.navIconContainer}>
+          <Text style={[styles.navIcon, { color: currentScreen === 'calendar' ? colors.primary : colors.textSecondary }]}>
+            📅
+          </Text>
+        </View>
+        <Text style={[styles.navText, { color: currentScreen === 'calendar' ? colors.primary : colors.textSecondary }]}>
+          Calendar
         </Text>
       </TouchableOpacity>
       
@@ -120,30 +114,57 @@ function AppContent() {
         style={[styles.navItem, currentScreen === 'resources' && styles.activeNavItem]} 
         onPress={() => setCurrentScreen('resources')}
       >
+        <View style={styles.navIconContainer}>
+          <Text style={[styles.navIcon, { color: currentScreen === 'resources' ? colors.primary : colors.textSecondary }]}>
+            📚
+          </Text>
+        </View>
         <Text style={[styles.navText, { color: currentScreen === 'resources' ? colors.primary : colors.textSecondary }]}>
           Resources
         </Text>
       </TouchableOpacity>
       
       <TouchableOpacity 
-        style={[styles.navItem, currentScreen === 'chat' && styles.activeNavItem]} 
-        onPress={() => setCurrentScreen('chat')}
+        style={[styles.navItem, currentScreen === 'officers' && styles.activeNavItem]} 
+        onPress={() => setCurrentScreen('officers')}
       >
-        <Text style={[styles.navText, { color: currentScreen === 'chat' ? colors.primary : colors.textSecondary }]}>
-          Chat
+        <View style={styles.navIconContainer}>
+          <Text style={[styles.navIcon, { color: currentScreen === 'officers' ? colors.primary : colors.textSecondary }]}>
+            👥
+          </Text>
+        </View>
+        <Text style={[styles.navText, { color: currentScreen === 'officers' ? colors.primary : colors.textSecondary }]}>
+          Officers
         </Text>
       </TouchableOpacity>
       
-      {isAdmin && (
-        <TouchableOpacity 
-          style={[styles.navItem, currentScreen === 'admin' && styles.activeNavItem]} 
-          onPress={() => setCurrentScreen('admin')}
-        >
-          <Text style={[styles.navText, { color: currentScreen === 'admin' ? colors.primary : colors.textSecondary }]}>
-            Admin
+      <TouchableOpacity 
+        style={[styles.navItem, currentScreen === 'contact' && styles.activeNavItem]} 
+        onPress={() => setCurrentScreen('contact')}
+      >
+        <View style={styles.navIconContainer}>
+          <Text style={[styles.navIcon, { color: currentScreen === 'contact' ? colors.primary : colors.textSecondary }]}>
+            ❓
           </Text>
-        </TouchableOpacity>
-      )}
+        </View>
+        <Text style={[styles.navText, { color: currentScreen === 'contact' ? colors.primary : colors.textSecondary }]}>
+          Contact
+        </Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={[styles.navItem, currentScreen === 'settings' && styles.activeNavItem]} 
+        onPress={() => setCurrentScreen('settings')}
+      >
+        <View style={styles.navIconContainer}>
+          <Text style={[styles.navIcon, { color: currentScreen === 'settings' ? colors.primary : colors.textSecondary }]}>
+            ⚙️
+          </Text>
+        </View>
+        <Text style={[styles.navText, { color: currentScreen === 'settings' ? colors.primary : colors.textSecondary }]}>
+          Settings
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 
@@ -153,7 +174,7 @@ function AppContent() {
         barStyle={isDark ? "light-content" : "dark-content"} 
         backgroundColor={colors.statusBarBackground} 
       />
-      <ScrollView style={styles.content}>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {renderScreen()}
       </ScrollView>
       {renderNavigation()}
@@ -180,6 +201,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    minHeight: '100vh',
   },
   content: {
     flex: 1,
@@ -189,6 +211,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    minHeight: '100vh',
   },
   logoCircle: {
     width: 120,
@@ -222,17 +245,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderTopWidth: 1,
     justifyContent: 'space-around',
+    position: 'fixed',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
   },
   navItem: {
+    alignItems: 'center',
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
+    minWidth: 60,
   },
   activeNavItem: {
     backgroundColor: 'rgba(110, 198, 255, 0.1)',
   },
+  navIconContainer: {
+    marginBottom: 4,
+  },
+  navIcon: {
+    fontSize: 20,
+  },
   navText: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '500',
+    textAlign: 'center',
   },
 });

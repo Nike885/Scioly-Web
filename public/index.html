@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#6EC6FF" />
+    <meta name="description" content="Cypress Ranch Science Olympiad - Access Resources, Stay prepared, Stay connected." />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>Cypress Ranch Science Olympiad</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+                sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: #121212;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+        
+        #root {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Ensure proper scrolling on mobile */
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+        
+        /* Custom scrollbar for web */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1E1E1E;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #6EC6FF;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4FC3F7;
+        }
+        
+        /* Ensure images don't overflow */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        /* Fix for mobile viewport */
+        @media screen and (max-width: 768px) {
+            body {
+                font-size: 16px;
+            }
+        }
+        
+        /* Ensure proper touch targets on mobile */
+        button, [role="button"] {
+            min-height: 44px;
+            min-width: 44px;
+        }
+        
+        /* Fix for iOS Safari */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+</body>
+</html>

@@ -26,23 +26,23 @@ export const lightColors = {
   statusBarBackground: '#6EC6FF',
 };
 
-// Dark theme colors
+// Dark theme colors - Updated to match mobile app
 export const darkColors = {
-  primary: '#4FC3F7', // Darker blue
-  secondary: '#FFB74D', // Darker yellow
+  primary: '#6EC6FF', // Light blue - matches mobile app
+  secondary: '#FFB74D', // Orange/yellow - matches mobile app
   accent: '#FF7043', // Darker coral
-  background: '#121212', // Dark background
-  card: '#1E1E1E', // Dark card
+  background: '#121212', // Dark background - matches mobile app
+  card: '#1E1E1E', // Dark card - matches mobile app
   cardShadow: 'rgba(79, 195, 247, 0.2)',
-  text: '#FFFFFF',
-  textSecondary: '#B0B0B0',
+  text: '#FFFFFF', // White text - matches mobile app
+  textSecondary: '#B0B0B0', // Light gray - matches mobile app
   success: '#66BB6A',
   warning: '#FFB74D',
   error: '#EF5350',
   info: '#42A5F5',
   gradientStart: '#121212',
   gradientEnd: '#1A1A1A',
-  border: '#333333',
+  border: '#333333', // Dark border - matches mobile app
   inputBackground: '#2A2A2A',
   tabBar: '#1E1E1E',
   tabBarBorder: '#333333',
@@ -56,10 +56,10 @@ export class ThemeManager {
     try {
       const key = userId ? `theme_${userId}` : 'theme';
       const theme = await AsyncStorage.getItem(key);
-      return theme || 'light';
+      return theme || 'dark'; // Default to dark mode
     } catch (error) {
       console.log('Error getting theme:', error);
-      return 'light';
+      return 'dark'; // Default to dark mode
     }
   }
 
@@ -72,13 +72,13 @@ export class ThemeManager {
     }
   }
 
-  static getColors(theme = 'light') {
+  static getColors(theme = 'dark') { // Default to dark
     return theme === 'dark' ? darkColors : lightColors;
   }
 }
 
 // Default export for backward compatibility
-export const colors = lightColors;
+export const colors = darkColors; // Default to dark colors
 
 export const font = {
   family: 'System',

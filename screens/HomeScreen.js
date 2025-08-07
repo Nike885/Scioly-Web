@@ -14,7 +14,7 @@ import {
   Alert
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import * as Animatable from 'react-native-animatable';
+
 import { useAuth } from '../contexts/AuthContext';
 import { useEvents } from '../contexts/EventsContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -23,12 +23,9 @@ import { font, spacing } from '../utils/theme';
 import AnimatedCard from '../components/AnimatedCard';
 import OfflineStatusIndicator from '../components/OfflineStatusIndicator';
 import { supabase } from '../supabase/supabaseClient';
-import { useNavigation } from '@react-navigation/native';
-
 const { width: screenWidth } = Dimensions.get('window');
 
-export default function HomeScreen() {
-  const navigation = useNavigation();
+export default function HomeScreen({ onNavigate }) {
   const { user, isAdmin } = useAuth();
   const { colors } = useTheme();
   const { events, announcements, unreadAnnouncements } = useEvents();
@@ -73,7 +70,7 @@ export default function HomeScreen() {
 
   const handleAnnouncementPress = () => {
     setShowBanner(false);
-    navigation.navigate('Announcements');
+    onNavigate('announcements');
   };
 
   return (
@@ -97,7 +94,7 @@ export default function HomeScreen() {
         </View>
         <TouchableOpacity
           style={[styles.settingsButton, { backgroundColor: colors.primary }]}
-          onPress={() => navigation.navigate('Settings')}
+          onPress={() => onNavigate('admin')}
         >
           <Ionicons name="settings-outline" size={24} color={colors.background} />
         </TouchableOpacity>
@@ -105,10 +102,8 @@ export default function HomeScreen() {
 
       {/* Unread Announcements Banner */}
       {showBanner && unreadAnnouncements > 0 && (
-        <Animatable.View 
+        <View 
           style={styles.bannerWrap}
-          animation="bounceInDown"
-          duration={800}
         >
           <TouchableOpacity
             style={[styles.banner, { backgroundColor: colors.accent }]}
@@ -126,25 +121,25 @@ export default function HomeScreen() {
             </View>
             <Ionicons name="chevron-forward" size={20} color={colors.background} />
           </TouchableOpacity>
-        </Animatable.View>
+        </View>
       )}
 
       {/* Logo Section */}
-      <Animatable.View animation="fadeInDown" duration={900} style={styles.logoWrap}>
-        <Image 
-          source={require('../assets/images/keyclublogo.png')} 
+      <View style={styles.logoWrap}>
+        <img 
+          src="./assets/images/keyclublogo.png" 
           style={styles.logo}
-          resizeMode="contain"
+          alt="Logo"
         />
-      </Animatable.View>
+      </View>
 
       {/* Welcome Text */}
-      <Animatable.Text animation="fadeInUp" delay={200} duration={900} style={[styles.welcome, { color: colors.secondary }]}>
+      <Text style={[styles.welcome, { color: colors.secondary }]}>
         Welcome to
-      </Animatable.Text>
-      <Animatable.Text animation="fadeInUp" delay={400} duration={900} style={[styles.title, { color: colors.text }]}>
+      </Text>
+      <Text style={[styles.title, { color: colors.text }]}>
         Cypress Ranch Science Olympiad
-      </Animatable.Text>
+      </Text>
 
       {/* Subtitle Card */}
       <AnimatedCard style={[styles.card, { backgroundColor: colors.card }]} animationDelay={600}>
@@ -155,13 +150,13 @@ export default function HomeScreen() {
       </AnimatedCard>
 
       {/* Quick Actions */}
-      <Animatable.View animation="fadeInUp" delay={800} style={styles.quickActions}>
+      <View style={styles.quickActions}>
         <Text style={[styles.sectionTitle, { color: colors.text }]}>Quick Actions</Text>
         
         <View style={styles.actionGrid}>
                            <TouchableOpacity
                    style={[styles.actionCard, { backgroundColor: colors.card }]}
-                   onPress={() => navigation.navigate(isAdmin ? 'AdminQuizResults' : 'DailyQuiz')}
+                   onPress={() => onNavigate(isAdmin ? 'admin' : 'quiz')}
                    activeOpacity={0.8}
                  >
                    <Ionicons name={isAdmin ? "analytics" : "school"} size={32} color={colors.primary} />
@@ -175,7 +170,7 @@ export default function HomeScreen() {
 
           <TouchableOpacity
             style={[styles.actionCard, { backgroundColor: colors.card }]}
-            onPress={() => navigation.navigate('InstagramFollow')}
+            onPress={() => onNavigate('resources')}
             activeOpacity={0.8}
           >
             <Ionicons name="logo-instagram" size={32} color="#E4405F" />
@@ -185,7 +180,7 @@ export default function HomeScreen() {
 
           <TouchableOpacity
             style={[styles.actionCard, { backgroundColor: colors.card }]}
-            onPress={() => navigation.navigate('Chat')}
+            onPress={() => onNavigate('chat')}
             activeOpacity={0.8}
           >
             <Ionicons name="chatbubbles" size={32} color={colors.accent} />
@@ -195,7 +190,7 @@ export default function HomeScreen() {
 
           <TouchableOpacity
             style={[styles.actionCard, { backgroundColor: colors.card }]}
-            onPress={() => navigation.navigate('VideoShowcase')}
+            onPress={() => onNavigate('resources')}
             activeOpacity={0.8}
           >
             <Ionicons name="videocam" size={32} color="#4299e1" />
@@ -205,7 +200,7 @@ export default function HomeScreen() {
 
                            <TouchableOpacity
                    style={[styles.actionCard, { backgroundColor: colors.card }]}
-                   onPress={() => navigation.navigate('Announcements')}
+                   onPress={() => onNavigate('announcements')}
                    activeOpacity={0.8}
                  >
             <Ionicons name="megaphone" size={32} color={colors.info} />
@@ -213,17 +208,17 @@ export default function HomeScreen() {
             <Text style={[styles.actionSubtitle, { color: colors.textSecondary }]}>Latest news</Text>
           </TouchableOpacity>
         </View>
-      </Animatable.View>
+      </View>
 
       {/* Admin Quick Actions */}
       {isAdmin && (
-        <Animatable.View animation="fadeInUp" delay={1000} style={styles.adminSection}>
+        <View style={styles.adminSection}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>Admin Tools</Text>
           
           <View style={styles.adminActions}>
             <TouchableOpacity
               style={[styles.adminCard, { backgroundColor: colors.primary }]}
-              onPress={() => navigation.navigate('EventCreation')}
+              onPress={() => onNavigate('announcements')}
               activeOpacity={0.8}
             >
               <Ionicons name="add-circle" size={24} color={colors.text} />
@@ -239,7 +234,7 @@ export default function HomeScreen() {
               <Text style={[styles.adminCardText, { color: colors.text }]}>New Announcement</Text>
             </TouchableOpacity>
           </View>
-        </Animatable.View>
+        </View>
       )}
     </ScrollView>
   );

@@ -1,6 +1,7 @@
 // services/SupabaseService.js - UPDATED with all missing methods
 import { supabase } from '../supabase/supabaseClient';
-import * as Crypto from 'expo-crypto';
+// Using browser crypto API instead of expo-crypto
+const crypto = window.crypto || window.msCrypto;
 
 class SupabaseService {
   
@@ -43,11 +44,12 @@ class SupabaseService {
       const salt = Math.random().toString(36).substring(2, 15);
       const saltedPassword = password + salt;
       
-      const hashedPassword = await Crypto.digestStringAsync(
-        Crypto.CryptoDigestAlgorithm.SHA256,
-        saltedPassword,
-        { encoding: Crypto.CryptoEncoding.HEX }
-      );
+      // Using browser crypto API for SHA-256 hashing
+      const encoder = new TextEncoder();
+      const data = encoder.encode(saltedPassword);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
       
       return `${hashedPassword}:${salt}`;
     } catch (error) {
@@ -64,11 +66,12 @@ class SupabaseService {
       const [hash, salt] = storedHash.split(':');
       const saltedPassword = password + salt;
       
-      const hashedInput = await Crypto.digestStringAsync(
-        Crypto.CryptoDigestAlgorithm.SHA256,
-        saltedPassword,
-        { encoding: Crypto.CryptoEncoding.HEX }
-      );
+      // Using browser crypto API for SHA-256 hashing
+      const encoder = new TextEncoder();
+      const data = encoder.encode(saltedPassword);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashedInput = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
       
       return hashedInput === hash;
     } catch (error) {

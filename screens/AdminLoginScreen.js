@@ -12,17 +12,14 @@ import {
   Easing,
   Switch
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { useAuth } from '../contexts/AuthContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { font } from '../utils/theme';
-import * as Animatable from 'react-native-animatable';
+
 import AnimatedButton from '../components/AnimatedButton';
 import { useTheme } from '../contexts/ThemeContext';
-import { useNavigation } from '@react-navigation/native';
-
-export default function AdminLoginScreen({ navigation: navProp }) {
-  const navigation = useNavigation();
+export default function AdminLoginScreen({ onNavigate }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -95,7 +92,7 @@ export default function AdminLoginScreen({ navigation: navProp }) {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}> 
+    <View style={[styles.container, { backgroundColor: colors.background }]}> 
       {/* Removed theme toggle - now always uses account setting */}
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -198,7 +195,7 @@ export default function AdminLoginScreen({ navigation: navProp }) {
           </Animated.View>
         </Animated.View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 }
 

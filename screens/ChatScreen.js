@@ -12,17 +12,17 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import * as Animatable from 'react-native-animatable';
-import { useIsFocused } from '@react-navigation/native';
+
+
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useOffline } from '../contexts/OfflineContext';
 import { font } from '../utils/theme';
 import { supabase } from '../supabase/supabaseClient';
 
-export default function ChatScreen() {
+export default function ChatScreen({ onNavigate }) {
   const { colors, theme } = useTheme();
   const [messageText, setMessageText] = useState('');
   const [messages, setMessages] = useState([]);
@@ -33,7 +33,7 @@ export default function ChatScreen() {
   const { isOnline, cacheChatMessages, getCachedChatMessages, addMessageToQueue } = useOffline();
   
   const flatListRef = useRef(null);
-  const { isFocused } = useIsFocused();
+  const [isFocused, setIsFocused] = useState(true);
 
   // Animation refs
   const fadeAnim = useRef(new Animated.Value(0)).current;

@@ -8,16 +8,15 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import * as Animatable from 'react-native-animatable';
-import { useNavigation } from '@react-navigation/native';
+
+
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { supabase } from '../supabase/supabaseClient';
 
-export default function DailyQuizScreen() {
-  const navigation = useNavigation();
+export default function DailyQuizScreen({ onNavigate }) {
   const { user } = useAuth();
   const { colors } = useTheme();
   
@@ -231,19 +230,19 @@ export default function DailyQuizScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
           <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
             Loading today's quiz...
           </Text>
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.primary }]}>
         <TouchableOpacity
@@ -261,7 +260,7 @@ export default function DailyQuizScreen() {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {alreadyCompleted ? (
           /* Already Completed View */
-          <Animatable.View animation="fadeInUp" duration={800} style={styles.completedContainer}>
+          <View style={styles.completedContainer}>
             <View style={[styles.completedCard, { backgroundColor: colors.card }]}>
               <Ionicons 
                 name="checkmark-circle" 
@@ -292,10 +291,10 @@ export default function DailyQuizScreen() {
                 Your daily quiz will reset at midnight. Come back tomorrow for a new quiz! 🌟
               </Text>
             </View>
-          </Animatable.View>
+          </View>
         ) : showResults ? (
           /* Results View */
-          <Animatable.View animation="fadeInUp" duration={800} style={styles.resultsContainer}>
+          <View style={styles.resultsContainer}>
             <View style={[styles.resultsCard, { backgroundColor: colors.card }]}>
               <Text style={[styles.resultsTitle, { color: colors.text }]}>
                 Quiz Complete!
@@ -346,10 +345,10 @@ export default function DailyQuizScreen() {
                 ))}
               </View>
             </View>
-          </Animatable.View>
+          </View>
         ) : (
           /* Quiz Questions View */
-          <Animatable.View animation="fadeInUp" duration={800} style={styles.quizContainer}>
+          <View style={styles.quizContainer}>
             <View style={[styles.progressContainer, { backgroundColor: colors.card }]}>
               <Text style={[styles.progressText, { color: colors.textSecondary }]}>
                 Question {currentQuestionIndex + 1} of {questions.length}
@@ -456,10 +455,10 @@ export default function DailyQuizScreen() {
                 </TouchableOpacity>
               )}
             </View>
-          </Animatable.View>
+          </View>
         )}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 

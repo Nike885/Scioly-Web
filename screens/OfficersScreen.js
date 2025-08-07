@@ -16,13 +16,13 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { font } from '../utils/theme';
-import * as Animatable from 'react-native-animatable';
+
 import { useTheme } from '../contexts/ThemeContext';
-import { useFocusEffect } from '@react-navigation/native';
+
 
 const { width: screenWidth } = Dimensions.get('window');
 
-export default function OfficersScreen() {
+export default function OfficersScreen({ onNavigate }) {
   const [screenData, setScreenData] = useState(Dimensions.get('window'));
   const { colors, theme } = useTheme();
   const [resetCards, setResetCards] = useState(0);
@@ -43,11 +43,9 @@ export default function OfficersScreen() {
   }, []);
 
   // Reset cards when screen comes into focus
-  useFocusEffect(
-    React.useCallback(() => {
-      setResetCards(prev => prev + 1);
-    }, [])
-  );
+  useEffect(() => {
+    setResetCards(prev => prev + 1);
+  }, []);
 
   const startEntranceAnimations = () => {
     Animated.sequence([
@@ -448,9 +446,9 @@ export default function OfficersScreen() {
            { backgroundColor: colors.primary, opacity: fadeAnim, transform: [ { translateY: slideAnim }, { scale: headerScaleAnim } ] },
           ]}
         >
-          <Animatable.View animation="bounceIn" delay={200}>
+          <View>
            <Ionicons name="people" size={40} color={colors.background} />
-          </Animatable.View>
+          </View>
          <Text style={[styles.headerTitle, { fontSize: 28, color: colors.background }]}>Our Leadership Team</Text>
         </Animated.View>
 
@@ -481,9 +479,9 @@ export default function OfficersScreen() {
          { backgroundColor: colors.primary, opacity: fadeAnim, transform: [ { translateY: slideAnim }, { scale: headerScaleAnim } ] },
         ]}
       >
-        <Animatable.View animation="bounceIn" delay={200}>
+        <View>
          <Ionicons name="people" size={32} color={colors.background} />
-        </Animatable.View>
+        </View>
        <Text style={[styles.headerTitle, { color: colors.background }]}>Our Leadership Team</Text>
       </Animated.View>
 

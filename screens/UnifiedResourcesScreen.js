@@ -13,14 +13,13 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { font } from '../utils/theme';
-import * as Animatable from 'react-native-animatable';
-import { useNavigation } from '@react-navigation/native';
+
+
 import { useTheme } from '../contexts/ThemeContext';
 
 const { width: screenWidth } = Dimensions.get('window');
 
-export default function ResourcesScreen() {
-  const navigation = useNavigation();
+export default function ResourcesScreen({ onNavigate }) {
   const { colors, theme } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
   
@@ -197,9 +196,9 @@ export default function ResourcesScreen() {
           { backgroundColor: colors.card, borderBottomColor: colors.cardShadow, opacity: fadeAnim, transform: [ { translateY: slideAnim }, { scale: searchScaleAnim } ] },
         ]}
       >
-        <Animatable.View animation="bounceIn" delay={200}>
+        <View>
           <Ionicons name="library" size={24} color={colors.primary} />
-        </Animatable.View>
+        </View>
         <Text style={[styles.headerTitle, { color: colors.text }]}>Resources</Text>
         <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>Find study materials and guides</Text>
       </Animated.View>
@@ -234,11 +233,9 @@ export default function ResourcesScreen() {
       >
 {hasAnyResults ? (
           filteredEventsData.map((section, sectionIndex) => (
-            <Animatable.View 
+            <View 
               key={sectionIndex} 
               style={styles.section}
-              animation="fadeInUp"
-              delay={sectionIndex * 100}
             >
       {searchQuery === '' && (
                 <View style={styles.sectionHeader}>
@@ -255,18 +252,16 @@ export default function ResourcesScreen() {
                   />
         ))}
       </View>
-            </Animatable.View>
+            </View>
   ))
 ) : (
-          <Animatable.View 
+          <View 
             style={styles.noResultsContainer}
-            animation="fadeIn"
-            delay={300}
           >
             <Ionicons name="search" size={48} color={colors.textSecondary} />
             <Text style={[styles.noResultsText, { color: colors.text }]}>No events found</Text>
             <Text style={[styles.noResultsSubtext, { color: colors.textSecondary }]}>Try a different search term</Text>
-          </Animatable.View>
+          </View>
 )}
     </ScrollView>
     </SafeAreaView>

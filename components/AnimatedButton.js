@@ -1,6 +1,6 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import * as Animatable from 'react-native-animatable';
+import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
+
 import { useTheme } from '../contexts/ThemeContext';
 import { font, shadows } from '../utils/theme';
 
@@ -51,10 +51,7 @@ export default function AnimatedButton({
   const buttonColors = getButtonColors();
 
   return (
-    <Animatable.View 
-      animation="pulse" 
-      duration={400} 
-      useNativeDriver
+    <View 
       pointerEvents={disabled ? 'none' : 'auto'}
     >
       <TouchableOpacity
@@ -74,12 +71,12 @@ export default function AnimatedButton({
         {...props}
       >
         {icon && (
-          <Animatable.View style={styles.iconContainer}>
+          <View style={styles.iconContainer}>
             {React.cloneElement(icon, { 
               color: iconColor || buttonColors.text,
               size: 20 
             })}
-          </Animatable.View>
+          </View>
         )}
         <Text style={[
           styles.text, 
@@ -88,7 +85,7 @@ export default function AnimatedButton({
           {children}
         </Text>
       </TouchableOpacity>
-    </Animatable.View>
+    </View>
   );
 }
 

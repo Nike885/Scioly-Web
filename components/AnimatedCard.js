@@ -1,6 +1,6 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
-import * as Animatable from 'react-native-animatable';
+import { TouchableOpacity, StyleSheet, View } from 'react-native';
+
 import { useTheme } from '../contexts/ThemeContext';
 import { shadows } from '../utils/theme';
 
@@ -14,15 +14,10 @@ export default function AnimatedCard({
 }) {
   const { colors } = useTheme();
 
-  const CardComponent = onPress ? TouchableOpacity : Animatable.View;
+  const CardComponent = onPress ? TouchableOpacity : View;
 
   return (
-    <Animatable.View
-      animation="fadeInUp"
-      delay={animationDelay}
-      duration={600}
-      useNativeDriver
-    >
+    <View>
       <CardComponent
         activeOpacity={onPress ? 0.8 : 1}
         onPress={onPress}
@@ -39,7 +34,7 @@ export default function AnimatedCard({
       >
         {children}
       </CardComponent>
-    </Animatable.View>
+    </View>
   );
 }
 

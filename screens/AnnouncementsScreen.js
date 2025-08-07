@@ -10,23 +10,22 @@ import {
   Dimensions
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+
 import { supabase } from '../supabase/supabaseClient';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { font } from '../utils/theme';
-import * as Animatable from 'react-native-animatable';
+
 import AnimatedButton from '../components/AnimatedButton';
-import { PanGestureHandler, State } from 'react-native-gesture-handler';
+
 
 const { width: screenWidth } = Dimensions.get('window');
 const SWIPE_THRESHOLD = -80;
 
-export default function AnnouncementsScreen() {
+export default function AnnouncementsScreen({ onNavigate }) {
   const { colors } = useTheme();
   const [announcements, setAnnouncements] = useState([]);
   const { isAdmin } = useAuth();
-  const navigation = useNavigation();
   
   // Animation refs
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -184,10 +183,7 @@ export default function AnnouncementsScreen() {
     };
 
     return (
-      <Animatable.View
-        animation="fadeInUp"
-        delay={index * 100}
-        duration={600}
+      <View
         style={styles.cardContainer}
       >
         <View style={[styles.deleteBackground, { backgroundColor: colors.error }]}>
@@ -254,7 +250,7 @@ export default function AnnouncementsScreen() {
             </View>
           </Animated.View>
         </PanGestureHandler>
-      </Animatable.View>
+      </View>
     );
   };
 
@@ -342,9 +338,7 @@ export default function AnnouncementsScreen() {
       </Animated.View>
       
       {announcements.length === 0 ? (
-        <Animatable.View
-          animation="fadeIn"
-          delay={400}
+        <View
           style={styles.emptyContainer}
         >
           <Ionicons name="megaphone-outline" size={80} color={colors.textSecondary} />
@@ -352,7 +346,7 @@ export default function AnnouncementsScreen() {
           <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
             Check back later for updates and important information.
           </Text>
-        </Animatable.View>
+        </View>
       ) : (
         <FlatList
           data={announcements}

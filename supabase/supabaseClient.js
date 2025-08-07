@@ -38,7 +38,10 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 // Create Supabase client with explicit headers
-export const supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseAnonKey || 'placeholder-key', {
+export const supabase = createClient(
+  supabaseUrl || 'https://placeholder.supabase.co', 
+  supabaseAnonKey || 'placeholder-key', 
+  {
   auth: {
     autoRefreshToken: false,
     persistSession: false,
@@ -56,9 +59,9 @@ export const supabase = createClient(supabaseUrl || 'https://placeholder.supabas
   }
 });
 
-// Test connection immediately
+// Test connection immediately (only if we have real credentials)
 console.log('🧪 Testing Supabase connection...');
-if (supabaseUrl && supabaseAnonKey) {
+if (supabaseUrl && supabaseAnonKey && !supabaseUrl.includes('placeholder')) {
   supabase
     .from('students')
     .select('count')
@@ -74,5 +77,5 @@ if (supabaseUrl && supabaseAnonKey) {
       console.error('❌ Supabase connection exception:', err);
     });
 } else {
-  console.warn('⚠️ Skipping Supabase connection test - no credentials');
+  console.warn('⚠️ Skipping Supabase connection test - using placeholder credentials');
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, StatusBar, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, StyleSheet, StatusBar, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
 
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { EventsProvider } from './contexts/EventsContext';
@@ -37,10 +37,10 @@ function AppContent() {
       <View style={[styles.splashContainer, { backgroundColor: colors.primary }]}>
         <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
         <View style={styles.logoCircle}>
-          <img
-            src="./assets/images/keyclublogo.png"
+          <Image
+            source={require('./assets/images/keyclublogo.png')}
             style={styles.logo}
-            alt="Logo"
+            resizeMode="contain"
           />
         </View>
         <Text style={styles.splashTitle}>

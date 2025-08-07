@@ -113,10 +113,10 @@ export default function HomeScreen({ onNavigate }) {
 
         {/* Logo Section */}
         <View style={styles.logoSection}>
-          <img 
-            src="./assets/images/keyclublogo.png" 
+          <Image 
+            source={require('../assets/images/keyclublogo.png')} 
             style={styles.logo}
-            alt="Science Olympiad Logo"
+            resizeMode="contain"
           />
         </View>
 
